@@ -2,7 +2,7 @@
 
 Bu proje, Rise In ve Patika.dev programlarının Frontend & Backend Devs Challenge kapsamında geliştirilmiştir. Wallet Management App, kullanıcıların çeşitli blockchain cüzdanlarını yönetmelerine olanak tanıyan bir uygulamadır. Uygulama, Circle API’si kullanılarak cüzdan bakiyelerini görüntüleme ve fonlama işlemleri gerçekleştirmektedir.
 
-![alt text](/screenshot-main.png)
+![alt text](/screenshot.png)
 
 ## Proje Hakkında
 
