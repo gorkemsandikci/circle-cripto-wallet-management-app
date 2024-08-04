@@ -1,103 +1,60 @@
-import React, { useState, useRef } from "react";
+import React, {useState, useRef, useEffect} from "react";
 import styled from "styled-components";
 import "./App.css";
-
-// Import components
-import Player from "./components/Player";
-import Song from "./components/Song";
-import Library from "./components/Library";
 import Nav from "./components/Nav";
 import Credit from "./components/Credit";
-// Import data
-import data from "./data";
+import Wallet from "./components/Wallet";
+import WalletItemDetail from "./components/WalletItemDetail";
 
 const App = () => {
-	// Ref
-	const audioRef = useRef(null);
 
-	// State
-	const [songs, setSongs] = useState(data());
-	const [currentSong, setCurrentSong] = useState(songs[0]);
-	const [isPlaying, setIsPlaying] = useState(false);
-	const [libraryStatus, setLibraryStatus] = useState(false);
-	const [songInfo, setSongInfo] = useState({
-		currentTime: 0,
-		duration: 0,
-	});
+	const [currentWallet, setCurrentWallet] = useState(null); // Güncellendi: state eklendi
+	const [walletStatus, setWalletStatus] = useState(false);
 
-	// Functions
-	const updateTimeHandler = (e) => {
-		const currentTime = e.target.currentTime;
-		const duration = e.target.duration;
-		setSongInfo({ ...songInfo, currentTime, duration });
-	};
-
-	const songEndHandler = async () => {
-		let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
-		let nextSong = songs[(currentIndex + 1) % songs.length];
-		await setCurrentSong(nextSong);
-
-		const newSongs = songs.map((song) => {
-			if (song.id === nextSong.id) {
-				return {
-					...song,
-					active: true,
-				};
-			} else {
-				return {
-					...song,
-					active: false,
-				};
-			}
-		});
-		setSongs(newSongs);
-
-		if (isPlaying) {
-			audioRef.current.play();
+	useEffect(() => {
+		// localStorage'dan wallet verilerini oku ve state'e set et
+		const storedWallet = localStorage.getItem('selectedWallet');
+		if (storedWallet) {
+			setCurrentWallet(JSON.parse(storedWallet));
 		}
+	}, []);
+
+	const handleSetCurrentWallet = (wallet) => {
+		setCurrentWallet(wallet);
+		localStorage.setItem('selectedWallet', JSON.stringify(wallet));
 	};
 
 	return (
-		<AppContainer libraryStatus={libraryStatus}>
-			<Nav libraryStatus={libraryStatus} setLibraryStatus={setLibraryStatus} />
-			<Song currentSong={currentSong} />
-			<Player
-				isPlaying={isPlaying}
-				setIsPlaying={setIsPlaying}
-				currentSong={currentSong}
-				setCurrentSong={setCurrentSong}
-				audioRef={audioRef}
-				songInfo={songInfo}
-				setSongInfo={setSongInfo}
-				songs={songs}
-				setSongs={setSongs}
-			/>
-			<Library
-				songs={songs}
-				setCurrentSong={setCurrentSong}
-				audioRef={audioRef}
-				isPlaying={isPlaying}
-				setSongs={setSongs}
-				libraryStatus={libraryStatus}
+		<AppContainer walletStatus={walletStatus}>
+			<Nav walletStatus={walletStatus} setWalletStatus={setWalletStatus} />
+
+			<WalletDetailContainer>
+				<WalletItemDetail currentWallet={currentWallet} />
+			</WalletDetailContainer>
+
+			<Wallet
+				setCurrentWallet={setCurrentWallet} // Güncellendi: setCurrentWallet fonksiyonu eklendi
+				walletStatus={walletStatus}
 			/>
 			<Credit />
-			<audio
-				onLoadedMetadata={updateTimeHandler}
-				onTimeUpdate={updateTimeHandler}
-				onEnded={songEndHandler}
-				ref={audioRef}
-				src={currentSong.audio}
-			/>
+
 		</AppContainer>
 	);
 };
 
 const AppContainer = styled.div`
 	transition: all 0.5s ease;
-	margin-left: ${(p) => (p.libraryStatus ? "20rem" : "0")};
+	margin-left: ${(p) => (p.walletStatus ? "20rem" : "0")};
 	@media screen and (max-width: 768px) {
 		margin-left: 0;
 	}
+`;
+
+const WalletDetailContainer = styled.div`
+	flex: 1;
+	border-left: 1px solid #ddd;
+	padding: 1rem;
+	background-color: #f9f9f9;
 `;
 
 export default App;

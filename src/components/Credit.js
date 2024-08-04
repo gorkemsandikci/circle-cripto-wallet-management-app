@@ -3,12 +3,11 @@ import styled from "styled-components";
 const Credit = () => {
 	return (
 		<CreditContainer>
-			<Link href="https://www.wilsonle.me" target="_blank">
-				Made by Wilson
+			<Link href="https://gorkemnet.com" target="_blank">
+				Made by Gorkem Sandikci
 			</Link>
-			<br></br>
-			<Link href="https://github.com/WilsonLe/react-music-player" target="_blank">
-				Github repository
+			<Link href="https://github.com/gorkemsandikci" target="_blank">
+				Find me on Github !
 			</Link>
 		</CreditContainer>
 	);
